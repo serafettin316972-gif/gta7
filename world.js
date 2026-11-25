@@ -131,7 +131,7 @@ window.startWorld=function(renderer,S,facade){
   var st=doc.createElement('style');st.textContent='.ingame .ui,.ingame .bar,.ingame #hint,.ingame #shint{display:none}'+
    '#hud{position:fixed;top:14px;left:16px;z-index:8;font:700 15px Rajdhani,sans-serif;letter-spacing:.15em;text-shadow:0 2px 4px #000;color:#fff}#hud small{display:block;opacity:.7;font-size:12px}'+
    '#mm{position:fixed;left:16px;bottom:16px;z-index:8;width:190px;height:190px;border:2px solid #fff8;border-radius:6px;overflow:hidden;transition:all .3s}#mm.big{width:min(80vh,80vw);height:min(80vh,80vw);left:50%;bottom:50%;transform:translate(-50%,50%)}'+
-   '#mm canvas{width:100%;height:100%;display:block;image-rendering:pixelated}#mk{position:absolute;width:0;height:0;border:6px solid transparent;border-bottom:14px solid #ff4e7e;margin:-10px 0 0 -6px}'+
+   '#mm canvas{position:static!important;inset:auto!important;width:100%!important;height:100%!important;display:block;image-rendering:pixelated}#mk{position:absolute;width:0;height:0;border:6px solid transparent;border-bottom:14px solid #ff4e7e;margin:-10px 0 0 -6px}'+
    '#ctl{position:fixed;bottom:14px;right:16px;z-index:8;font:600 13px Rajdhani,sans-serif;letter-spacing:.12em;opacity:.8;text-align:right;text-shadow:0 2px 4px #000;color:#fff}';
   doc.head.appendChild(st);
   var hud=doc.createElement('div');hud.id='hud';doc.body.appendChild(hud);
@@ -139,7 +139,7 @@ window.startWorld=function(renderer,S,facade){
   var mm=doc.createElement('div');mm.id='mm';var mc=doc.createElement('canvas');mc.width=mc.height=200;mm.appendChild(mc);var mk2=doc.createElement('div');mk2.id='mk';mm.appendChild(mk2);doc.body.appendChild(mm);
   (function(){var g=mc.getContext('2d'),im=g.createImageData(200,200),cl={sea:[42,111,158],beach:[217,196,143],downtown:[122,106,154],mid:[106,98,128],port:[154,138,112],suburb:[111,154,90]};
     for(var py=0;py<200;py++)for(var px=0;px<200;px++){var x=-1600+px*16+8,z=-1600+py*16+8,zn=zoneAt(x,z),c=cl[zn],o=(py*200+px)*4;
-      if(!c){var h=H(x,z),s=Math.min(1,h/150);c=[60+s*150,110+s*90-s*20,60+s*150]}
+      if(!c){var h=H(x,z),s=Math.min(1,h/150);c=[50+s*130,100+s*80,50+s*120]}
       im.data[o]=c[0];im.data[o+1]=c[1];im.data[o+2]=c[2];im.data[o+3]=255}g.putImageData(im,0,0)})();
 
   // Kontroller (serbest uçuş kamerası)
