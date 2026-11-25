@@ -32,12 +32,12 @@
     -webkit-background-clip:text;background-clip:text;color:transparent;
     filter:drop-shadow(0 6px 0 rgba(0,0,0,.45)) drop-shadow(0 0 30px rgba(255,90,120,.45))}
   #logo .t2{font-size:clamp(14px,2.2vw,28px);letter-spacing:.9em;margin-top:.6em;color:#ffe2c0;text-indent:.9em}
-  #menu{margin-top:5vh;opacity:0;transition:opacity 1s;pointer-events:auto;min-height:150px}
+  #menu{position:relative;z-index:7;margin-top:5vh;opacity:0;transition:opacity 1s;pointer-events:auto;min-height:150px}
   #menu.show{opacity:1}
   #press{font-size:clamp(16px,2vw,24px);letter-spacing:.35em;animation:bl 1.4s ease-in-out infinite;cursor:pointer}
   @keyframes bl{50%{opacity:.25}}
   .list{display:none;flex-direction:column;gap:6px;align-items:stretch}
-  .list div{font-size:clamp(18px,2.3vw,30px);font-weight:700;letter-spacing:.22em;padding:4px 28px;cursor:pointer;color:#ffd9b0;opacity:.65;transition:.2s;border-left:4px solid transparent;display:flex;justify-content:space-between;gap:40px;text-align:left}
+  .list div{user-select:none;font-size:clamp(18px,2.3vw,30px);font-weight:700;letter-spacing:.22em;padding:4px 28px;cursor:pointer;color:#ffd9b0;opacity:.65;transition:.2s;border-left:4px solid transparent;display:flex;justify-content:space-between;gap:40px;text-align:left}
   .list div.sel{opacity:1;color:#fff;border-left-color:#ff4e7e;background:linear-gradient(90deg,rgba(255,78,126,.35),transparent);transform:translateX(8px)}
   .list div b{color:#ffb347}
   #hint,#shint{position:fixed;bottom:14vh;left:0;right:0;text-align:center;z-index:6;font-size:14px;letter-spacing:.2em;opacity:.55}
@@ -62,9 +62,10 @@
 <div id="hint">Sinematiği geçmek için herhangi bir tuşa bas</div>
 <div id="shint">↑↓ SEÇ &nbsp; ←→ / ENTER DEĞİŞTİR &nbsp; ESC GERİ</div>
 <div id="fade"></div>
-<div id="msg"><div>YENİ OYUN</div><small>Aşama 2: oyun dünyası, karakter ve araba sürüşü yakında...</small></div>
+<div id="msg"><div>YENİ OYUN</div><small></small></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="world.js"></script>
 <script>
 (function(){
 var $=function(id){return document.getElementById(id)};
@@ -198,7 +199,7 @@ function camPath(t){
 }
 var fr=0,ft=performance.now();
 function loop(now){
-  requestAnimationFrame(loop);
+  requestAnimationFrame(loop);if(window.__world)return;
   var dt=Math.min((now-t0)/1000-clock,.1);clock+=dt;
   var p=camPath(clock);camera.position.set(p[0],p[1],p[2]);
   camera.lookAt(0,24,0);
@@ -228,13 +229,19 @@ var rows=[
 var ss=0;
 function applyUI(){document.body.classList.toggle('nograin',!S.grain);$('fps').style.display=S.fps?'block':'none';if(!S.fps)$('fps').textContent=''}
 function render(){
-  var el=$('sets');el.innerHTML='';
+  var el=$('sets');
+  if(el.children.length!==rows.length){
+    el.innerHTML='';
+    rows.forEach(function(r,n){
+      var d=document.createElement('div');
+      d.innerHTML='<span>'+r.n+'</span><b></b>';
+      d.addEventListener('mouseenter',function(){ss=n;render()});
+      d.addEventListener('pointerdown',function(e){e.preventDefault();ss=n;r.ch(1);after()});
+      el.appendChild(d);
+    });
+  }
   rows.forEach(function(r,n){
-    var d=document.createElement('div');if(n===ss)d.className='sel';
-    d.innerHTML='<span>'+r.n+'</span><b>'+r.v()+'</b>';
-    d.onmouseenter=function(){ss=n;render()};
-    d.onclick=function(){r.ch(1);after()};
-    el.appendChild(d);
+    var d=el.children[n];d.className=(n===ss)?'sel':'';d.lastChild.textContent=r.v();
   });
 }
 function after(){applyUI();save();render()}
@@ -257,7 +264,7 @@ function pick(i){sel=(i+items.length)%items.length;items.forEach(function(e,n){e
 function choose(){
   if(sel===2){openSettings();return}
   if(sel!==0)return;state='starting';$('fade').classList.add('dark');
-  setTimeout(function(){$('msg').style.display='flex'},1300);
+  setTimeout(function(){window.__world=true;startWorld(renderer,S,facade)},1300);
 }
 addEventListener('keydown',function(e){
   if(state==='intro'){skipIntro();return}
@@ -271,10 +278,10 @@ addEventListener('keydown',function(e){
     else if(e.key==='Escape')closeSettings();
   }
 });
-$('press').addEventListener('click',function(){if(state==='press')openMenu()});
+$('press').addEventListener('pointerdown',function(e){e.stopPropagation();if(state==='press')openMenu()});
 items.forEach(function(el,n){
   el.addEventListener('mouseenter',function(){pick(n)});
-  el.addEventListener('click',function(){pick(n);choose()});
+  el.addEventListener('pointerdown',function(e){e.preventDefault();e.stopPropagation();pick(n);choose()});
 });
 document.addEventListener('pointerdown',function(){if(state==='intro')skipIntro()});
 })();
