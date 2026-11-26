@@ -28,7 +28,7 @@ jobs:
           $godotZip = "$env:RUNNER_TEMP\godot.zip"
           $templateTpz = "$env:RUNNER_TEMP\templates.tpz"
           $templateZip = "$env:RUNNER_TEMP\templates.zip"
-          Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_win64_console.exe.zip" -OutFile $godotZip
+          Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_win64.exe.zip" -OutFile $godotZip
           Expand-Archive -Path $godotZip -DestinationPath "$env:RUNNER_TEMP\godot" -Force
           $godot = Get-ChildItem "$env:RUNNER_TEMP\godot" -Filter "*console.exe" -Recurse | Select-Object -First 1
           if (-not $godot) { throw "Godot console executable missing after download." }
