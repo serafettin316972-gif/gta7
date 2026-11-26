@@ -26,6 +26,7 @@ jobs:
       - name: Download Godot 4.3 and export templates
         run: |
           $godotZip = "$env:RUNNER_TEMP\godot.zip"
+          $templateTpz = "$env:RUNNER_TEMP\templates.tpz"
           $templateZip = "$env:RUNNER_TEMP\templates.zip"
           Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_win64_console.exe.zip" -OutFile $godotZip
           Expand-Archive -Path $godotZip -DestinationPath "$env:RUNNER_TEMP\godot" -Force
@@ -33,7 +34,8 @@ jobs:
           if (-not $godot) { throw "Godot console executable missing after download." }
           "GODOT=$($godot.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-          Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz" -OutFile $templateZip
+          Invoke-WebRequest -Uri "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz" -OutFile $templateTpz
+          Copy-Item $templateTpz $templateZip -Force
           $templateStage = "$env:RUNNER_TEMP\template-stage"
           Expand-Archive -Path $templateZip -DestinationPath $templateStage -Force
           $templatesRoot = Join-Path $env:APPDATA "Godot\export_templates\4.3.stable"
@@ -43,6 +45,7 @@ jobs:
             throw "Windows x86_64 release export template was not installed."
           }
           & $godot.FullName --version
+          if ($LASTEXITCODE -ne 0) { throw "Godot version check failed." }
 
       - name: Import project and parse all scripts
         run: |
