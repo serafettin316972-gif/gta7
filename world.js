@@ -216,7 +216,7 @@ window.startWorld=function(renderer,S,facade){
 
   // ---------- Araba modelleri ----------
   var glowC=doc.createElement('canvas');glowC.width=64;glowC.height=128;var gg=glowC.getContext('2d'),gr=gg.createLinearGradient(0,0,0,128);
-  gr.addColorStop(0,'rgba(255,240,200,.6)');gr.addColorStop(1,'rgba(255,240,200,0)');gg.fillStyle=gr;gg.fillRect(0,0,64,128);
+  gr.addColorStop(0,'rgba(255,225,160,.2)');gr.addColorStop(1,'rgba(255,225,160,0)');gg.fillStyle=gr;gg.fillRect(0,0,64,128);
   var glowM=new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(glowC),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false});
   var geoC={};
   function carGeo(c,mode){var key=c.type+c.ci+mode;if(geoC[key])return geoC[key];var St=mk(false);carParts(St,CT[c.type],CC[c.ci],mode==='b'?0x07090c:0x1b2a3a,mode!=='f');return(geoC[key]=fin(St,vcMat).geometry)}
@@ -231,7 +231,7 @@ window.startWorld=function(renderer,S,facade){
       var pv=new THREE.Group();pv.position.set(sx*(T.W/2-.1),.36,sz*T.wb);var spin=new THREE.Group();
       var tire=new THREE.Mesh(WHEEL,tireM);tire.scale.set(.26,.72,.72);var rim=new THREE.Mesh(WHEEL,rimM);rim.scale.set(.27,.44,.44);rim.position.x=sx*.02;
       spin.add(tire,rim);pv.add(spin);tilt.add(pv);sp.push(spin);if(sz>0)fw.push(pv)}
-    var gl=new THREE.Mesh(new THREE.PlaneGeometry(5,9),glowM);gl.rotation.x=-Math.PI/2;gl.position.set(0,.14,T.L/2+4.4);root.add(gl);
+    var gl=new THREE.Mesh(new THREE.PlaneGeometry(3.6,6.5),glowM);gl.rotation.x=-Math.PI/2;gl.position.set(0,.14,T.L/2+3.2);root.add(gl);
     var dash=new THREE.Group(),dm=new THREE.MeshLambertMaterial({color:0x14141a}),db=new THREE.Mesh(new THREE.BoxGeometry(T.W*.8,.22,.55),dm);db.position.set(0,.98,.55);
     var swh=new THREE.Mesh(new THREE.CylinderGeometry(.18,.18,.03,14),dm);swh.position.set(.4,1.08,.38);swh.rotation.x=1.2;dash.add(db,swh);dash.visible=false;tilt.add(dash);
     root.traverse(function(o){if(o.isMesh)o.castShadow=o.receiveShadow=SH});gl.castShadow=gl.receiveShadow=false;
@@ -458,7 +458,7 @@ window.startWorld=function(renderer,S,facade){
       if(sT<camS)camS=sT;else camS+=(sT-camS)*Math.min(1,4*dt);
       var kk=Math.min(1,10*dt);cam.position.x+=(ox+(tx-ox)*camS-cam.position.x)*kk;cam.position.y+=(oy+(ty-oy)*camS-cam.position.y)*kk;cam.position.z+=(oz+(tz-oz)*camS-cam.position.z)*kk;
       cam.lookAt(c.x+fx*2.5,c.y+1.1,c.z+fz*2.5)}
-    var fT=65+Math.min(1,spd/T.vmax)*22;fov+=(fT-fov)*Math.min(1,5*dt);cam.fov=fov;cam.updateProjectionMatrix();
+    var fT=56+Math.min(1,spd/T.vmax)*16;fov+=(fT-fov)*Math.min(1,5*dt);cam.fov=fov;cam.updateProjectionMatrix();
     spdBox.firstChild.textContent=Math.round(spd*3.6);spdBox.querySelector('s').textContent=c.sp<-.5?'R':(spd<.5?'N':Math.max(1,c.gear|0));
     spdBox.querySelector('b').style.width=(c.eng?Math.min(100,c.rpm*100):0)+'%';
     pEl.textContent=spd<4?'[E] ARABADAN İN':'';

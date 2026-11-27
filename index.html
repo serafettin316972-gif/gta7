@@ -76,7 +76,7 @@ try{Object.assign(S,JSON.parse(localStorage.getItem('bc_settings')||'{}'))}catch
 function save(){try{localStorage.setItem('bc_settings',JSON.stringify(S))}catch(e){}}
 var QN=['DÜŞÜK','ORTA','YÜKSEK'],QPR=[0.75,1,1.5],QCARS=[30,70,110];
 
-var renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'high-performance'});
+var renderer=new THREE.WebGLRenderer({antialias:S.quality>0,powerPreference:'high-performance'});
 document.body.prepend(renderer.domElement);
 function applyQuality(){
   renderer.setPixelRatio(Math.min(devicePixelRatio,QPR[S.quality]));
